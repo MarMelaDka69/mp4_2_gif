@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  web:
+    build: .
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATA_DIR: /data
+      MAX_UPLOAD_MB: "50"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - media_data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["celery", "-A", "app.tasks:celery_app", "worker", "--loglevel=INFO", "--concurrency=3", "--prefetch-multiplier=1"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATA_DIR: /data
+    volumes:
+      - media_data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  media_data:

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Быстрое преобразование MP4 в GIF с очередью фоновых задач.">
+  <title>Frameflow — MP4 в GIF</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <div class="ambient one"></div><div class="ambient two"></div>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Frameflow — главная"><span class="brand-mark"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="4" y="5" width="24" height="22" rx="7" stroke="currentColor" stroke-width="2.3"/><path d="m13 11 9 5-9 5V11Z" fill="currentColor"/></svg></span><span>frame<span class="accent">flow</span><span class="brand-dot">.</span></span></a>
+      <div class="toplinks"><a href="#how">Как это работает</a><a href="/docs" target="_blank" rel="noopener">API Docs <span aria-hidden="true">↗</span></a><span class="service-pill"><i></i> Сервис онлайн</span></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow"><span class="spark">✦</span> ВИДЕО → АНИМАЦИЯ · БЕЗ ЛИШНИХ ШАГОВ</div>
+        <h1>Превращай видео<br>в <span class="gradient-text">живые GIF.</span></h1>
+        <p class="subtitle">Загрузи MP4, а мы займёмся остальным. Конвертация выполняется в фоне — можно отправлять сразу несколько файлов.</p>
+        <div class="hero-stats"><div><strong>50 МБ</strong><span>до / файла</span></div><span class="stat-divider"></span><div><strong>10 FPS</strong><span>плавная анимация</span></div><span class="stat-divider"></span><div><strong>3</strong><span>задачи параллельно</span></div></div>
+      </section>
+
+      <section class="workspace" id="upload">
+        <div class="workspace-heading"><div><span class="section-kicker">01 / КОНВЕРТЕР</span><h2>Загрузи своё видео</h2></div><span class="format-chip">MP4 <span>→</span> GIF</span></div>
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Выбрать MP4-файлы или перетащить их сюда">
+          <input id="fileInput" type="file" accept=".mp4,video/mp4" multiple hidden>
+          <div class="upload-icon"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 33V12m0 0-8 8m8-8 8 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 30v6a4 4 0 0 0 4 4h18a4 4 0 0 0 4-4v-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <h3>Перетащи видео сюда</h3><p>или выбери файлы на компьютере</p>
+          <button class="primary-btn" id="chooseBtn" type="button"><span>Выбрать MP4</span><span aria-hidden="true">↗</span></button>
+          <span class="drop-hint">Можно несколько файлов · Каждый до 50 МБ</span>
+        </div>
+        <div class="notice"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5m0-8v.5" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg><span>GIF создаётся с шириной 480 пикселей и частотой 10 кадров/с. Готовый файл можно скачать по завершении.</span></div>
+      </section>
+
+      <section class="jobs-section" id="jobs">
+        <div class="jobs-heading"><div><span class="section-kicker">02 / МОИ ЗАДАЧИ</span><h2>Очередь конвертации <span class="counter" id="jobCount">0</span></h2></div><button class="clear-btn" type="button" id="clearHistory" hidden>Очистить список</button></div>
+        <div id="jobsList" class="jobs-list" aria-live="polite"><div class="empty"><div class="empty-icon">✧</div><strong>Пока здесь пусто</strong><p>Добавь видео выше — и следи за конвертацией в реальном времени.</p></div></div>
+      </section>
+
+      <section class="how" id="how"><div class="section-kicker">КАК ЭТО РАБОТАЕТ</div><h2>Три шага до результата</h2><div class="steps"><article><div class="step-num">01</div><h3>Загрузи MP4</h3><p>Выбери одно или несколько видео. API сохранит их и поставит задачи в очередь.</p></article><article><div class="step-num">02</div><h3>Подожди немного</h3><p>Redis передаст задачи Celery, а worker обработает их параллельно через FFmpeg.</p></article><article><div class="step-num">03</div><h3>Скачай GIF</h3><p>Когда статус изменится на «Готово», анимацию можно открыть и сохранить.</p></article></div></section>
+    </main>
+    <footer><span>© <span id="year"></span> frameflow. <span class="muted">Powered by FastAPI · Celery · Redis · FFmpeg</span></span><a href="/docs" target="_blank" rel="noopener">Документация API ↗</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
